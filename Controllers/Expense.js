@@ -1,5 +1,6 @@
 import { expenseModel } from "../Models/Expense.js";
-import jwt, { decode } from "jsonwebtoken";
+import { userModel } from "../Models/User.js";
+import jwt from "jsonwebtoken";
 
 export const addExpense = async (req,res) => {
     try {
@@ -14,8 +15,7 @@ export const addExpense = async (req,res) => {
         }
 
         const decoded = jwt.verify(token, process.env.SECRETKEY)
-        const user = await userModel.findOne({_id: decoded.id});
-
+        const user = userModel.findOne({_id: decoded.id});
         
         const expense = await expenseModel.create({
             description,
@@ -23,6 +23,11 @@ export const addExpense = async (req,res) => {
             paidBy: decoded.id
         })
         user.expense = expense._id;
+
+        return res.status(200).json({
+            success: true,
+            message: "expense added successfully"
+        })
 
 
     } catch (error) {
