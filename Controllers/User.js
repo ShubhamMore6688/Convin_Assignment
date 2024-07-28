@@ -1,4 +1,3 @@
-import { expenseModel } from "../Models/Expense.js";
 import { userModel } from "../Models/User.js";
 import jwt from "jsonwebtoken";
 
@@ -124,47 +123,3 @@ export const GetUserDetails = async(req,res) => {
 
 
 
-
-
-// test controller
-
-export const testController = async (req, res) => {
-    try {
-        const {token} = req.cookies;
-        if(!token){
-            return res.status(401).json({
-                success: false,
-                message: "login first"
-            })
-        }
-
-        const decoded = jwt.verify(token, process.env.SECRETKEY);
-
-        // get the current logged user
-        const user = await userModel.findOne({_id: decoded.id}).populate("expense");
-
-        // retrive the expense from expense array field of current user
-        let individualExpense = [];
-        let indivitem = [];
-        for (const expense of user.expense) {
-            // store the expense details in array
-            individualExpense = await expenseModel.findOne({_id: expense});
-
-            for (const item of individualExpense.shares) {
-                if(item.user.equals(user._id)){
-                    indivitem.push(item);
-                }
-            }
-        }
-
-        return res.status(200).json({
-            success: true,
-            indivitem
-        })
-    } catch (error) {
-          // if error occure this block is executes.
-          res.status(500).json({
-            message: error.message
-        })
-    }
-}

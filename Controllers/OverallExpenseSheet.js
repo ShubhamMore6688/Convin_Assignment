@@ -1,13 +1,13 @@
 import exceljs from 'exceljs';
 import { expenseModel } from '../Models/Expense.js';
 
-export const exportExpense = async (req,res) => {
+export const exportOverallExpense = async (req,res) => {
 
     // create workbook
     const workbook =  new exceljs.Workbook();
 
     // create worksheet in that workbook
-    const worksheet = workbook.addWorksheet("myexpense");
+    const worksheet = workbook.addWorksheet("overall-expense");
 
     // path to download the file
     const path = "./files"
