@@ -14,7 +14,17 @@ const ExpenseSchema = mongoose.Schema({
     paidBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'userModel'
-    }
+    },
+    sharedType: {
+        type: String,
+        enum: ['EXACT','EQUAL','PERCENTAGE'],
+        default: 'EQUAL',
+    },
+    shares:  [{
+        user: {type: mongoose.Schema.Types.ObjectId, ref: 'userModel'},
+        amount: {type: Number}
+    }]
+
 
 }, {timestamp: true})
 

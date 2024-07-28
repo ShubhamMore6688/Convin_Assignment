@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 export const addExpense = async (req,res) => {
     try {
         const {token}  = req.cookies;
-        const {description, amount} = req.body;
+        const {description, amount, sharedType, shares} = req.body;
 
         if(!token){
             return res.status(401).json({
@@ -16,13 +16,85 @@ export const addExpense = async (req,res) => {
 
         const decoded = jwt.verify(token, process.env.SECRETKEY)
         const user = userModel.findOne({_id: decoded.id});
-        
+
+        // check all the users in the group are valid or not
+        for (const share of shares) {
+            const user = await userModel.findById(share.user);
+            if(!user){
+                return res.status(400).json({
+                    success: true,
+                    message: "invalid user"
+                })
+            }
+        }
+
+        // create object with user and amount
+        // amount is changes as per the sharedType
+        let calculatedShare = 0;
+        switch (sharedType) {
+
+            // when sharedType is EQUAL
+            case 'EQUAL':
+                const sharedamount = amount / shares.length;
+                calculatedShare = shares.map(share => ({user: share.user, amount: sharedamount}));
+                break;
+
+            // when sharedType is PERCENTAGE
+            case 'PERCENTAGE':
+                let totalpercentage = 0;
+                for (const share of shares) {
+                    totalpercentage += share.amount;
+                }
+
+                if(totalpercentage !== 100){
+                    throw new Error("total percentage is not 100")
+                }
+
+                calculatedShare = shares.map(share => ({
+                    user: share.user,
+                    amount: (amount * share.amount)/100
+                }))
+            
+                break;
+
+            // when sharedType is EXACT
+            case 'EXACT':
+                let totalamount = 0;
+                for (const share of shares) {
+                    totalamount += share.amount;
+                }
+
+                if(totalamount !== amount){
+                    throw new Error("total exact amount is not equal to the amount")
+                }
+
+                calculatedShare = shares
+                
+                break;
+
+           
+            default:
+                throw new Error("Invalid sharedType")
+                break;
+        }
+
+        // create new expense entry
         const expense = await expenseModel.create({
             description,
             amount,
-            paidBy: decoded.id
+            paidBy: decoded.id,
+            sharedType, 
+            shares: calculatedShare
         })
-        user.expense = expense._id;
+
+        for (const share of shares) {
+            let user = await userModel.findOne({_id: share.user});
+            if(user){
+                user.expense.push(expense._id);
+                await user.save();
+            }
+
+          }
 
         return res.status(200).json({
             success: true,
@@ -30,6 +102,60 @@ export const addExpense = async (req,res) => {
         })
 
 
+    } catch (error) {
+         // if error occure this block is executes.
+         res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+
+//retrieve individual user expenses
+export const getExpense = async (req,res) => {
+    try {
+        const {token} = req.cookies;
+        if(!token){
+            return res.status(401).json({
+                success: false,
+                message: "login first"
+            })
+        }
+
+        const decoded = jwt.verify(token, process.env.SECRETKEY);
+
+        // get the current logged user
+        const user = await userModel.findOne({_id: decoded.id});
+
+        // retrive the expense from expense array field of current user
+        let individualExpense = []
+        for (const expense of user.expense) {
+            // store the expense details in array
+            individualExpense.push(await expenseModel.findOne({_id: expense}));
+        }
+
+        return res.status(200).json({
+            success: true,
+            individualExpense
+        })
+    } catch (error) {
+          // if error occure this block is executes.
+          res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+
+
+//Retrieve overall expenses.
+export const overallExpense = async(req,res) => {
+    try {
+        const expenses = await expenseModel.find();
+        return res.status(200).json({
+            success: true,
+            expenses
+        })
     } catch (error) {
          // if error occure this block is executes.
          res.status(500).json({

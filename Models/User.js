@@ -16,10 +16,10 @@ const UserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    expense: {
+    expense: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'expenseModel'
-    }
+    }]
 
 }, {timestamps: true})
 
