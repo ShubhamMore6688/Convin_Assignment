@@ -4,18 +4,7 @@ import jwt from "jsonwebtoken";
 
 export const addExpense = async (req,res) => {
     try {
-        const {token}  = req.cookies;
-        const {description, amount, sharedType, shares} = req.body;
-
-        if(!token){
-            return res.status(401).json({
-                success: false,
-                message: "login first"
-            })
-        }
-
-        const decoded = jwt.verify(token, process.env.SECRETKEY)
-        const user = userModel.findOne({_id: decoded.id});
+        const user = req.user;
 
         // check all the users in the group are valid or not
         for (const share of shares) {
@@ -76,8 +65,15 @@ export const addExpense = async (req,res) => {
                 if(totalamount !== amount){
                     throw new Error("total exact amount is not equal to the amount")
                 }
-                calculatedShare.description = description
-                calculatedShare = shares
+
+                calculatedShare = shares.map(share => (
+                    {
+                        user: share.user,
+                        description,
+                        amount: share.amount
+                    }
+                ))
+
                 
                 break;
 
@@ -123,18 +119,10 @@ export const addExpense = async (req,res) => {
 //retrieve individual user expenses
 export const getExpense = async (req,res) => {
     try {
-        const {token} = req.cookies;
-        if(!token){
-            return res.status(401).json({
-                success: false,
-                message: "login first"
-            })
-        }
-
-        const decoded = jwt.verify(token, process.env.SECRETKEY);
+       
 
         // get the current logged user
-        const user = await userModel.findOne({_id: decoded.id}).populate("expense");
+        const user = await req.user.populate("expense");
 
         // retrive the expense from expense array field of current user
         

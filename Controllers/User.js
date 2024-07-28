@@ -73,14 +73,7 @@ export const LoginUser = async(req,res) => {
 //logout
 export const LogoutUser = (req,res) => {
     try {
-        const {token} = req.cookies;
-        if(!token){
-            return res.status(401).json({
-                success: false,
-                message: "login first"
-            })
-        }
-
+        
         return res.cookie("token", "", { 
             expires: new Date(Date.now()) 
         }).json({
@@ -95,21 +88,21 @@ export const LogoutUser = (req,res) => {
 // get the user details
 export const GetUserDetails = async(req,res) => {
     try {
-        const {token} = req.cookies;
-        if(!token){
-            // 401 for Unauthorized
-            return res.status(401).json({
-                success: false,
-                message: "login first"
-            })
-        }
+        // const {token} = req.cookies;
+        // if(!token){
+        //     // 401 for Unauthorized
+        //     return res.status(401).json({
+        //         success: false,
+        //         message: "login first"
+        //     })
+        // }
 
-        const decoded = jwt.verify(token, process.env.SECRETKEY);
-        const user = await userModel.findOne({_id: decoded.id});
+        // const decoded = jwt.verify(token, process.env.SECRETKEY);
+        // const user = await userModel.findOne({_id: decoded.id});
 
         return res.status(200).json({
             success: true,
-            user
+            user: req.user
         })
     } catch (error) {
         // if error occure this block is executes.

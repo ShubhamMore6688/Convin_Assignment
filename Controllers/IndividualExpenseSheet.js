@@ -5,7 +5,7 @@ import { expenseModel } from '../Models/Expense.js';
 export const exportIndividualExpense = async (req,res) => {
 
    try {
-        const {token} = req.cookies;
+        // const {token} = req.cookies;
         const workbook = new exceljs.Workbook();
 
         const worksheet = workbook.addWorksheet("my-expense");
@@ -18,16 +18,17 @@ export const exportIndividualExpense = async (req,res) => {
         ]
 
 
-        const decoded = jwt.verify(token, process.env.SECRETKEY);
 
         // get the current logged user
-        const user = await userModel.findOne({_id: decoded.id}).populate("expense");
+        const user = await req.user.populate("expense");
 
         // retrive the expense from expense array field of current user
-        
         let individualExpenseDetailsOfUser = [];
+
+    
         // iterate through the expense array in the user model
         for (const expense of user.expense) {
+            
            // store the expense details in array
            let individualExpense = await expenseModel.findOne({_id: expense});
 
