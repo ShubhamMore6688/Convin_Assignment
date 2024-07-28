@@ -28,7 +28,6 @@ The Expense Sharing Application is designed to help friends share and track thei
 - Node.js
 - Express.js
 - MongoDB
-- Mongoose
 - JWT for authentication
 - ExcelJS for exporting data to Excel
 - dotenv for environment variables
@@ -38,8 +37,8 @@ The Expense Sharing Application is designed to help friends share and track thei
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/expense-sharing-app.git
-cd expense-sharing-app
+git clone https://github.com/ShubhamMore6688/Convin_Assignment.git
+cd Convin_Assignment
 ```
 2. Install dependencies:
 
@@ -50,11 +49,37 @@ npm install
 
 ```bash
 SECRETKEY=your_jwt_secret_key
-MONGO_URI=your_mongodb_connection_string
+DB_URL=your_mongodb_connection_string
 ```
 4. Start the server:
 
 ```bash
 npm start
 ```
+
+## Usage
+
+1. **User Registration and Login**:
+    - Register a new user by sending a POST request to `/createuser` with `username`, `email`, and `mobile no.`.
+       
+    - Login with an existing user by sending a POST request to `/login` with `email`.
+        
+
+2. **Add Expense**:
+    - Add an expense by sending a POST request to `/addexpense` with `description`, `amount`, `sharedType`, and `shares`.
+
+        
+3. **View Individual Expenses**:
+    - Get the logged-in user's expenses by sending a GET request to `/indexpense`.
+
+
+4. **View Overall Expenses**:
+    - Get the all user's expenses by sending a GET request to `/overallexp`.
+      
+
+5. **Export Individual Expenses**:
+    - Export individual expenses to an Excel file by sending a GET request to `/download-individual`.
+
+6. **Export Overall Expenses**:
+    - Export overall expenses to an Excel file by sending a GET request to `/download`.
 
