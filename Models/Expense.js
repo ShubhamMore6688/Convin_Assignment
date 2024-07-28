@@ -13,7 +13,7 @@ const ExpenseSchema = mongoose.Schema({
     },
     paidBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'userModel'
+        ref: 'user'
     },
     sharedType: {
         type: String,
@@ -21,7 +21,7 @@ const ExpenseSchema = mongoose.Schema({
         default: 'EQUAL',
     },
     shares:  [{
-        user: {type: mongoose.Schema.Types.ObjectId, ref: 'userModel'},
+        user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         amount: {type: Number}
     }]
 

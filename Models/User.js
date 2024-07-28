@@ -18,7 +18,7 @@ const UserSchema = mongoose.Schema({
     },
     expense: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'expenseModel'
+        ref: 'expense'
     }]
 
 }, {timestamps: true})

@@ -3,6 +3,7 @@ import connectDB from "./Data/database.js";
 import { config } from "dotenv";
 import UserRouter from "./Routes/User.js"
 import ExpenseRouter from "./Routes/Expense.js"
+import ExcelRouter from "./Routes/Excel.js"
 import cookieParser from "cookie-parser";
 
 //express server
@@ -27,6 +28,9 @@ app.use(UserRouter);
 
 //expense router
 app.use(ExpenseRouter);
+
+//excel router
+app.use(ExcelRouter);
 
 app.listen(3000, ()=>{
     console.log("server started successfully");
