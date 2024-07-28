@@ -4,16 +4,24 @@ import mongoose from "mongoose";
 const UserSchema = mongoose.Schema({
     email: {
         type: String,
-        required: true,
+        required: [true,'Email is required'],
         unique: true
     },
     name: {
         type: String,
-        required: true
+        required: [true, 'Name is required'],
+        minlength: [3, 'Name must be at least 3 characters long'],
+        maxlength: [50, 'Name must be less that 50 characters long']
     },
     mobileno:{
         type: String,
         required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: [true, 'password is required'],
+        minlength: [6, 'password must have atleast 6 characters'],
         unique: true
     },
     expense: [{

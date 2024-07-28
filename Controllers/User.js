@@ -1,11 +1,12 @@
 import { userModel } from "../Models/User.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 // create new user
 export const CreateUser = async(req, res) => {
     try {
         // get entered user details
-        const {email, name, mobileno} = req.body;
+        const {email, name, mobileno, password} = req.body;
 
         let user = await userModel.findOne({email});
 
@@ -18,11 +19,13 @@ export const CreateUser = async(req, res) => {
             })
         }
         
+        const encyptpassword = await bcrypt.hash(password, 10);
         // if user is not present in the database create new user with given details
         user = await userModel.create({
             email,
             name,
-            mobileno
+            mobileno,
+            password: encyptpassword
         })
 
        
@@ -45,13 +48,21 @@ export const CreateUser = async(req, res) => {
 // login user
 export const LoginUser = async(req,res) => {
     try {
-        const {email} = req.body;
+        const {email, password} = req.body;
 
         let user = await userModel.findOne({email});
         if(!user){
             return res.status(404).json({
                 success: false,
                 message: "user not found"
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if(!isMatch){
+            return res.status(401).json({
+                success: false,
+                message: "invalid password"
             })
         }
 

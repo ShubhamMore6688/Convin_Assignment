@@ -9,25 +9,33 @@ const ExpenseSchema = mongoose.Schema({
     },
     amount: {
         type: Number,
-        required: true
+        required: [true, 'Description is required'],
+        min: [0, 'Amount must be a positive number']
     },
     paidBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'user',
+        required: [true, 'Paidby is required']
     },
     sharedType: {
         type: String,
-        enum: ['EXACT','EQUAL','PERCENTAGE'],
+        enum: {
+            values: ['EXACT','EQUAL','PERCENTAGE'],
+            message: 'shared type must be one of this'
+        },
         default: 'EQUAL',
     },
     shares:  [{
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         description: {type: String},
-        amount: {type: Number}
-    }]
+        amount: {
+            type: Number,
+            min: [0, 'amount must be a positive number'],
+        },
+    }],
 
 
-}, {timestamp: true})
+}, {timestamps: true})
 
 
 export const expenseModel = mongoose.model("expense", ExpenseSchema);
