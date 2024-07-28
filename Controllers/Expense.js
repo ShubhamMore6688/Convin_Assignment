@@ -36,7 +36,13 @@ export const addExpense = async (req,res) => {
             // when sharedType is EQUAL
             case 'EQUAL':
                 const sharedamount = amount / shares.length;
-                calculatedShare = shares.map(share => ({user: share.user, amount: sharedamount}));
+                calculatedShare = shares.map(share => (
+                {
+                    user: share.user, 
+                    description,
+                    amount: sharedamount
+                }
+            ));
                 break;
 
             // when sharedType is PERCENTAGE
@@ -50,10 +56,13 @@ export const addExpense = async (req,res) => {
                     throw new Error("total percentage is not 100")
                 }
 
-                calculatedShare = shares.map(share => ({
-                    user: share.user,
-                    amount: (amount * share.amount)/100
-                }))
+                calculatedShare = shares.map(share => (
+                    {
+                        user: share.user,
+                        description,
+                        amount: (amount * share.amount)/100
+                    }
+                ))
             
                 break;
 
@@ -67,7 +76,7 @@ export const addExpense = async (req,res) => {
                 if(totalamount !== amount){
                     throw new Error("total exact amount is not equal to the amount")
                 }
-
+                calculatedShare.description = description
                 calculatedShare = shares
                 
                 break;
@@ -125,18 +134,28 @@ export const getExpense = async (req,res) => {
         const decoded = jwt.verify(token, process.env.SECRETKEY);
 
         // get the current logged user
-        const user = await userModel.findOne({_id: decoded.id});
+        const user = await userModel.findOne({_id: decoded.id}).populate("expense");
 
         // retrive the expense from expense array field of current user
-        let individualExpense = []
+        
+        let individualExpenseDetailsOfUser = [];
+        // iterate through the expense array in the user model
         for (const expense of user.expense) {
-            // store the expense details in array
-            individualExpense.push(await expenseModel.findOne({_id: expense}));
+           // store the expense details in array
+           let individualExpense = await expenseModel.findOne({_id: expense});
+
+           // for overall expense details we need expense of individual user
+           // form shares array we are taking only current users expenses.
+           for (const item of individualExpense.shares) {
+            if(item.user.equals(user._id)){
+                individualExpenseDetailsOfUser.push(item);
+            }
+        }
         }
 
         return res.status(200).json({
             success: true,
-            individualExpense
+            individualExpenseDetailsOfUser
         })
     } catch (error) {
           // if error occure this block is executes.

@@ -22,6 +22,7 @@ const ExpenseSchema = mongoose.Schema({
     },
     shares:  [{
         user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+        description: {type: String},
         amount: {type: Number}
     }]
 
