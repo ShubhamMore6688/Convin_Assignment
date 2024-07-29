@@ -2,14 +2,14 @@
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Project Structure](#project-structure)
-- [License](#license)
+- [Introduction]
+- [Features]
+- [Technologies Used]
+- [Installation]
+- [Usage]
+- [API Endpoints]
+- [Project Structure]
+- [License]
 
 ## Introduction
 
@@ -56,6 +56,11 @@ DB_URL=your_mongodb_connection_string
 ```bash
 npm start
 ```
+5. Access the application:
+
+```bash
+http://localhost:3000
+```
 
 ## Usage
 
@@ -64,24 +69,26 @@ npm start
        
     - Login with an existing user by sending a POST request to `/login` with `email`.
         
+2. **Get User Details**:
+    - Add an expense by sending a GET request to `/getuser`.
 
-2. **Add Expense**:
+3. **Add Expense**:
     - Add an expense by sending a POST request to `/addexpense` with `description`, `amount`, `sharedType`, and `shares`.
 
         
-3. **View Individual Expenses**:
-    - Get the logged-in user's expenses by sending a GET request to `/indexpense`.
+4. **View Individual Expenses**:
+    - Get the logged-in user's expenses by sending a GET request to `/individualexpense`.
 
 
-4. **View Overall Expenses**:
-    - Get the all user's expenses by sending a GET request to `/overallexp`.
+5. **View Overall Expenses**:
+    - Get the all user's expenses by sending a GET request to `/overallexpense`.
       
 
-5. **Export Individual Expenses**:
+6. **Export Individual Expenses**:
     - Export individual expenses to an Excel file by sending a GET request to `/download-individual`.
 
-6. **Export Overall Expenses**:
-    - Export overall expenses to an Excel file by sending a GET request to `/download`.
+7. **Export Overall Expenses**:
+    - Export overall expenses to an Excel file by sending a GET request to `//download-overall`.
 
 ## Project Structure
 
@@ -126,20 +133,25 @@ npm start
   - Request: `{ "email": "string", "password": "string" }`
   - Response: `{ "success": true, "token": "JWT token" }`
 
+### User
+
+- **Get User**: `GET /getuser`
+  - Response: `{ "success": true, "user": [userObject] }`
+
 ### Expenses
 
 - **Add Expense**: `POST /addExpense`
   - Request: `{ "description": "string", "amount": number, "sharedType": "EQUAL | PERCENTAGE | EXACT", "shares": [{ "user": "userId", "amount": number }] }`
   - Response: `{ "success": true, "message": "Expense added successfully" }`
 
-- **Get Individual Expenses**: `GET /indexpense`
+- **Get Individual Expenses**: `GET /individualexpense`
   - Response: `{ "success": true, "individualExpenseDetailsOfUser": [expenseObject] }`
 
-- **Get Overall Expenses**: `GET /overallexp`
+- **Get Overall Expenses**: `GET /overallexpense`
   - Response: `{ "success": true, "expenses": [expenseObject] }`
 
 - **Export Individual Expenses**: `GET /download-individual`
   - Response: `{ "success": true, "message": "file successfully downloaded", "path": "./files/individual.xlsx" }`
 
-- **Export Overall Expenses**: `GET /download`
-  - Response: `{ "success": true, "message": "file successfully downloaded", "path": "./files/users.xlsx" }`
+- **Export Overall Expenses**: `GET /download-overall`
+  - Response: `{ "success": true, "message": "file successfully downloaded", "path": "./files/overall.xlsx" }`

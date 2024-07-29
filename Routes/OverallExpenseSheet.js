@@ -5,7 +5,7 @@ import { UserAuthentication } from "../Middlewares/authentication.js";
 const router = express.Router();
 
 
-router.get("/download",UserAuthentication, exportOverallExpense);
+router.get("/download-overall",UserAuthentication, exportOverallExpense);
 router.get("/download-individual", UserAuthentication, exportIndividualExpense);
 
 

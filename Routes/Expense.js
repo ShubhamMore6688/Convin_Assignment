@@ -5,7 +5,7 @@ import { UserAuthentication } from "../Middlewares/authentication.js";
 const router = express.Router();
 
 router.post("/addexpense", UserAuthentication, addExpense);
-router.get("/indexpense", UserAuthentication, getExpense);
-router.get("/overallexp", UserAuthentication, overallExpense);
+router.get("/individualexpense", UserAuthentication, getExpense);
+router.get("/overallexpense", UserAuthentication, overallExpense);
 
 export default router;

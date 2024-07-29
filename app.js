@@ -33,5 +33,5 @@ app.use(ExpenseRouter);
 app.use(ExcelRouter);
 
 app.listen(3000, ()=>{
-    console.log("server started successfully");
+    console.log("server is running on http://localhost:3000");
 })
