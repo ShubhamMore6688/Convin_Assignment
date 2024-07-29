@@ -83,3 +83,63 @@ npm start
 6. **Export Overall Expenses**:
     - Export overall expenses to an Excel file by sending a GET request to `/download`.
 
+## Project Structure
+
+```bash
+.
+├── app.js
+├── Controllers
+│   ├── Expense.js
+│   ├── IndividualExpenseSheet.js
+│   ├── OverallExpenseSheet.js
+│   └── User.js
+├── Data
+│   ├── config.env
+│   └── database.js
+├── files
+│   ├── individual.xlsx
+│   └── users.xlsx
+├── Middlewares
+│   └── authentication.js
+├── Models
+│   ├── Expense.js
+│   └── User.js
+├── package.json
+├── package-lock.json
+├── README.md
+└── Routes
+    ├── Expense.js
+    ├── OverallExpenseSheet.js
+    └── User.js
+
+```
+
+## API Endpoints
+
+### Authentication
+
+- **Register**: `POST createuser`
+  - Request: `{ "username": "string", "email": "string", "mobileno": "464646545", "password": "string" }`
+  - Response: `{ "success": true, "message": "User registered successfully" }`
+
+- **Login**: `POST /login`
+  - Request: `{ "email": "string", "password": "string" }`
+  - Response: `{ "success": true, "token": "JWT token" }`
+
+### Expenses
+
+- **Add Expense**: `POST /addExpense`
+  - Request: `{ "description": "string", "amount": number, "sharedType": "EQUAL | PERCENTAGE | EXACT", "shares": [{ "user": "userId", "amount": number }] }`
+  - Response: `{ "success": true, "message": "Expense added successfully" }`
+
+- **Get Individual Expenses**: `GET /indexpense`
+  - Response: `{ "success": true, "individualExpenseDetailsOfUser": [expenseObject] }`
+
+- **Get Overall Expenses**: `GET /overallexp`
+  - Response: `{ "success": true, "expenses": [expenseObject] }`
+
+- **Export Individual Expenses**: `GET /download-individual`
+  - Response: `{ "success": true, "message": "file successfully downloaded", "path": "./files/individual.xlsx" }`
+
+- **Export Overall Expenses**: `GET /download`
+  - Response: `{ "success": true, "message": "file successfully downloaded", "path": "./files/users.xlsx" }`
