@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 export const addExpense = async (req,res) => {
     try {
+        const {description, amount, sharedType, paidBy, shares} = req.body;
         const user = req.user;
 
         // check all the users in the group are valid or not
@@ -87,7 +88,7 @@ export const addExpense = async (req,res) => {
         const expense = await expenseModel.create({
             description,
             amount,
-            paidBy: decoded.id,
+            paidBy,
             sharedType, 
             shares: calculatedShare
         })

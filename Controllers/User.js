@@ -76,7 +76,10 @@ export const LoginUser = async(req,res) => {
 
 
     } catch (error) {
-        
+        // if error occure this block is executes.
+        res.status(500).json({
+            message: error.message
+        })
     }
 }
 
@@ -92,24 +95,17 @@ export const LogoutUser = (req,res) => {
             message: "logout successfully"
         })
     } catch (error) {
-        
+        // if error occure this block is executes.
+        res.status(500).json({
+            message: error.message
+        })
     }
 }
 
 // get the user details
 export const GetUserDetails = async(req,res) => {
     try {
-        // const {token} = req.cookies;
-        // if(!token){
-        //     // 401 for Unauthorized
-        //     return res.status(401).json({
-        //         success: false,
-        //         message: "login first"
-        //     })
-        // }
-
-        // const decoded = jwt.verify(token, process.env.SECRETKEY);
-        // const user = await userModel.findOne({_id: decoded.id});
+       
 
         return res.status(200).json({
             success: true,

@@ -21,6 +21,9 @@ export const UserAuthentication = async(req, res, next) => {
 
          next();
     } catch (error) {
-        
+        // if error occure this block is executes.
+        res.status(500).json({
+            message: error.message
+        })
     }
 }
